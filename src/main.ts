@@ -19,3 +19,5 @@ button.addEventListener("click", () => {
   counterElement.textContent = counter.toString();
   // console.log("I have these thingies:", button, counterElement, counter);
 });
+
+console.log("cookie");
