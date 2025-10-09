@@ -26,7 +26,7 @@ button.appendChild(img);
 const counterElement = document.getElementById("counter")!;
 
 button.addEventListener("click", () => {
-  // This looks like to a good place to add some logic!
+  // Increase counter each time button is clicked.
   ++counter;
   counterElement.textContent = counter.toString();
   // console.log("I have these thingies:", button, counterElement, counter);
