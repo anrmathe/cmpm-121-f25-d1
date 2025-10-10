@@ -33,17 +33,31 @@ button.addEventListener("click", () => {
   counterElement.textContent = counter.toString();
   // console.log("I have these thingies:", button, counterElement, counter);
 });
-
 let autoclickEnabled = false;
+let lastTime = performance.now();
 
+function update(time: number) {
+  const delta = time - lastTime; // ms since last frame
+  lastTime = time;
+
+  if (autoclickEnabled) {
+    // Increase smoothly at 1 unit per second
+    counter += delta / 1000;
+    counterElement.textContent = counter.toFixed(2);
+  }
+
+  requestAnimationFrame(update);
+}
+
+// Start animation loop
+requestAnimationFrame(update);
+
+// --- Toggle auto-clicking on/off ---
 autoclickButton.addEventListener("click", () => {
   autoclickEnabled = !autoclickEnabled;
-  if (autoclickEnabled) {
-    setInterval(() => {
-      ++counter;
-      counterElement.textContent = counter.toString();
-    }, 1000);
-  }
+  autoclickButton.textContent = autoclickEnabled
+    ? "Disable Channel Surfer"
+    : "Enable Channel Surfer";
 });
 
 console.log("cookie");
