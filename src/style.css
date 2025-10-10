@@ -20,5 +20,10 @@ button#increment img {
 }
 
 button#increment:active img {
-  transform: scale(0.95);
+  transform: scale(0.9);
+}
+
+button#increment:hover {
+  transform: scale(1.1);
+  transition: transform 0.1s ease-in-out;
 }
