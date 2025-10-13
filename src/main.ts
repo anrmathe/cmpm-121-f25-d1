@@ -11,7 +11,8 @@ document.body.innerHTML = `
   <button id="increment"></button>
   <button id="autoclick-btn">Enable Channel Surfer</button>
   <button id="upgrade-btn" disabled>📺 Buy New Screen (Cost: 10 units)</button>
-  <p>Example image asset: <img src="${remoteURL}" class="icon" /></p>
+  <button id="watch-btn" disabled>👩🏽‍💻🛋️ Add Binge-Watcher (Cost: 40 units)</button>
+  <button id="endorse-btn" disabled>👶🏻 Endorse a studio nepo baby? (Cost: 100 units)</button>
 `;
 document.createElement("div");
 let tvContainer = document.getElementById("tv-container");
@@ -26,6 +27,12 @@ const button = document.getElementById("increment")!;
 const autoclickButton = document.getElementById("autoclick-btn")!;
 const upgradeButton = document.getElementById(
   "upgrade-btn",
+) as HTMLButtonElement;
+const watchButton = document.getElementById(
+  "watch-btn",
+) as HTMLButtonElement;
+const endorseButton = document.getElementById(
+  "endorse-btn",
 ) as HTMLButtonElement;
 
 const img = document.createElement("img");
@@ -64,6 +71,8 @@ function update(time: number) {
 
   // Enable or disable upgrade button dynamically
   upgradeButton.disabled = counter < 10;
+  watchButton.disabled = counter < 40;
+  endorseButton.disabled = counter < 100;
 
   requestAnimationFrame(update);
 }
@@ -95,6 +104,35 @@ upgradeButton.addEventListener("click", () => {
   tvEmoji.style.fontSize = "48px"; // Make it large
   tvEmoji.style.margin = "8px";
   tvContainer!.appendChild(tvEmoji);
+});
+
+watchButton.addEventListener("click", () => {
+  if (counter >= 40) {
+    counter -= 40;
+    growthRate += 4; // increases by 4 units per second
+    counterElement.textContent = counter.toFixed(2);
+
+    // Feedback for upgrade
+    watchButton.textContent =
+      `👩🏽‍💻🛋️ Add Binge-Watcher (Cost: 40) — Rate: ${growthRate}/s`;
+  }
+});
+
+endorseButton.addEventListener("click", () => {
+  if (counter >= 100) {
+    counter -= 100;
+    growthRate += 10; // increases by 10 units per second
+    counterElement.textContent = counter.toFixed(2);
+
+    // Feedback for upgrade
+    endorseButton.textContent =
+      `👶🏻 Endorse a studio nepo baby? (Cost: 100) — Rate: ${growthRate}/s`;
+  }
+  const babyEmoji = document.createElement("span");
+  babyEmoji.textContent = "👶🏻";
+  babyEmoji.style.fontSize = "48px"; // Make it large
+  babyEmoji.style.margin = "8px";
+  tvContainer!.appendChild(babyEmoji);
 });
 
 console.log("cookie");
