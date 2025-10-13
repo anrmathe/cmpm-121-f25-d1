@@ -1,12 +1,30 @@
 import remoteURL from "./remote-control-vector-isolated-icon-remote-control-emoji-illustration-remote-control-vector-icon_603823-875.jpg";
 import "./style.css";
 
+interface Item {
+  name: string;
+  emoji: string;
+  cost: number;
+  rate: number;
+  element?: HTMLButtonElement; // will store reference to its button
+  container?: HTMLElement; // optional visual container (like for 📺 or 👶)
+}
+
 let counter: number = 0;
 let growthRate: number = 0;
+let autoclickEnabled = false;
+let lastTime = performance.now();
 
-let screenCost = 10;
-let watcherCost = 40;
-let babyCost = 100;
+const availableItems: Item[] = [
+  { name: "Buy New Screen", emoji: "📺", cost: 10, rate: 1 },
+  { name: "Add Binge-Watcher", emoji: "👩🏽‍💻🛋️", cost: 40, rate: 4 },
+  {
+    name: "Endorse a studio nepo baby?",
+    emoji: "👶🏻",
+    cost: 100,
+    rate: 10,
+  },
+];
 
 // Create basic HTML structure
 document.body.innerHTML = `
@@ -14,45 +32,12 @@ document.body.innerHTML = `
   <p>Total Attention Units: <span id="counter">0</span></p>
   <button id="increment"></button>
   <button id="autoclick-btn">Enable Channel Surfer</button>
-  <button id="upgrade-btn" disabled>📺 Buy New Screen ${
-  screenCost.toFixed(2)
-}</button>
-  <button id="watch-btn" disabled>👩🏽‍💻🛋️ Add Binge-Watcher (Cost: ${
-  watcherCost.toFixed(2)
-} units)</button>
-  <button id="endorse-btn" disabled>👶🏻 Endorse a studio nepo baby? (Cost: ${
-  babyCost.toFixed(2)
-} units)</button>
+  <div id="items-container"></div>
 `;
-document.createElement("div");
-let tvContainer = document.getElementById("tv-container");
-if (!tvContainer) {
-  tvContainer = document.createElement("div");
-  tvContainer.id = "tv-container";
-  document.body.appendChild(tvContainer);
-}
-
-let babyContainer = document.getElementById("baby-container");
-if (!babyContainer) {
-  babyContainer = document.createElement("div");
-  babyContainer.id = "baby-container";
-  babyContainer.style.display = "block";
-  babyContainer.style.marginTop = "16px"; // Space below TVs
-  document.body.appendChild(babyContainer);
-}
 
 // Add click handler
 const button = document.getElementById("increment")!;
 const autoclickButton = document.getElementById("autoclick-btn")!;
-const upgradeButton = document.getElementById(
-  "upgrade-btn",
-) as HTMLButtonElement;
-const watchButton = document.getElementById(
-  "watch-btn",
-) as HTMLButtonElement;
-const endorseButton = document.getElementById(
-  "endorse-btn",
-) as HTMLButtonElement;
 
 const img = document.createElement("img");
 img.src = remoteURL; // <-- put your image path here
@@ -64,34 +49,76 @@ img.height = 128;
 button.appendChild(img);
 
 const counterElement = document.getElementById("counter")!;
+const itemsContainer = document.getElementById("items-container")!;
 
 button.addEventListener("click", () => {
   // Increase counter each time button is clicked.
   ++counter;
-  counterElement.textContent = counter.toString();
+  counterElement.textContent = counter.toFixed(2);
   // console.log("I have these thingies:", button, counterElement, counter);
 });
-let autoclickEnabled = false;
-let lastTime = performance.now();
+
+availableItems.forEach((item) => {
+  const btn = document.createElement("button");
+  btn.textContent = `${item.emoji} ${item.name} (Cost: ${
+    item.cost.toFixed(
+      2,
+    )
+  })`;
+  btn.disabled = true;
+
+  btn.addEventListener("click", () => {
+    if (counter >= item.cost) {
+      counter -= item.cost;
+      growthRate += item.rate;
+      item.cost *= 1.15; // increase future cost
+      counterElement.textContent = counter.toFixed(2);
+
+      // Update button text to reflect new cost & total rate
+      btn.textContent = `${item.emoji} ${item.name} (Cost: ${
+        item.cost.toFixed(
+          2,
+        )
+      }) — Rate: ${growthRate}/s`;
+
+      // Visual reward: add emoji for certain items
+      if (!item.container) {
+        item.container = document.createElement("div");
+        item.container.style.marginTop = "8px";
+        itemsContainer.appendChild(item.container);
+      }
+      const emoji = document.createElement("span");
+      emoji.textContent = item.emoji;
+      emoji.style.fontSize = "48px";
+      emoji.style.margin = "8px";
+      item.container.appendChild(emoji);
+    }
+  });
+
+  itemsContainer.appendChild(btn);
+  item.element = btn; // store reference
+});
+
 function update(time: number) {
-  const delta = time - lastTime; // ms since last frame
+  const delta = time - lastTime;
   lastTime = time;
 
   if (autoclickEnabled) {
-    // Increase smoothly at 1 unit per second
     counter += delta / 1000;
   }
 
-  // Apply passive growth rate from upgrades
+  // Passive growth
   counter += (growthRate * delta) / 1000;
 
-  // Update display
+  // Update displayed counter
   counterElement.textContent = counter.toFixed(2);
 
-  // Enable or disable upgrade button dynamically
-  upgradeButton.disabled = counter < screenCost;
-  watchButton.disabled = counter < watcherCost;
-  endorseButton.disabled = counter < babyCost;
+  // Enable/disable all item buttons dynamically
+  for (const item of availableItems) {
+    if (item.element) {
+      item.element.disabled = counter < item.cost;
+    }
+  }
 
   requestAnimationFrame(update);
 }
@@ -105,59 +132,6 @@ autoclickButton.addEventListener("click", () => {
   autoclickButton.textContent = autoclickEnabled
     ? "Disable Channel Surfer"
     : "Enable Channel Surfer";
-});
-
-// --- Upgrade Purchase ---
-upgradeButton.addEventListener("click", () => {
-  if (counter >= screenCost) {
-    counter -= screenCost;
-    growthRate += 1; // increases by 1 unit per second
-    screenCost *= 1.15; // Double the cost for the next purchase
-    counterElement.textContent = counter.toFixed(2);
-
-    // Feedback for upgrade
-    upgradeButton.textContent = `📺 Buy New Screen (Cost: ${
-      screenCost.toFixed(2)
-    }) — Rate: ${growthRate}/s`;
-  }
-  const tvEmoji = document.createElement("span");
-  tvEmoji.textContent = "📺";
-  tvEmoji.style.fontSize = "48px"; // Make it large
-  tvEmoji.style.margin = "8px";
-  tvContainer!.appendChild(tvEmoji);
-});
-
-watchButton.addEventListener("click", () => {
-  if (counter >= watcherCost) {
-    counter -= watcherCost;
-    growthRate += 4; // increases by 4 units per second
-    watcherCost *= 1.15; // Double the cost for the next purchase
-    counterElement.textContent = counter.toFixed(2);
-
-    // Feedback for upgrade
-    watchButton.textContent = `👩🏽‍💻🛋️ Add Binge-Watcher (Cost: ${
-      watcherCost.toFixed(2)
-    }) — Rate: ${growthRate}/s`;
-  }
-});
-
-endorseButton.addEventListener("click", () => {
-  if (counter >= babyCost) {
-    counter -= babyCost;
-    growthRate += 10; // increases by 10 units per second
-    babyCost *= 1.15; // Double the cost for the next purchase
-    counterElement.textContent = counter.toFixed(2);
-
-    // Feedback for upgrade
-    endorseButton.textContent = `👶🏻 Endorse a studio nepo baby? (Cost: ${
-      babyCost.toFixed(2)
-    }) — Rate: ${growthRate}/s`;
-  }
-  const babyEmoji = document.createElement("span");
-  babyEmoji.textContent = "👶🏻";
-  babyEmoji.style.fontSize = "48px"; // Make it large
-  babyEmoji.style.margin = "8px";
-  babyContainer!.appendChild(babyEmoji);
 });
 
 console.log("cookie");
