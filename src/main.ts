@@ -6,6 +6,7 @@ interface Item {
   emoji: string;
   cost: number;
   rate: number;
+  description: string;
   element?: HTMLButtonElement; // will store reference to its button
   container?: HTMLElement; // optional visual container (like for 📺 or 👶)
 }
@@ -16,15 +17,67 @@ let autoclickEnabled = false;
 let lastTime = performance.now();
 
 const availableItems: Item[] = [
-  { name: "Buy New Screen", emoji: "📺", cost: 10, rate: 1 },
-  { name: "Add Binge-Watcher", emoji: "👩🏽‍💻🛋️", cost: 40, rate: 4 },
+  {
+    name: "Buy New Screen",
+    emoji: "📺",
+    cost: 10,
+    rate: 1,
+    description:
+      "Studies show that adding screens increases happiness by 0%. Let’s test that!",
+  },
+  {
+    name: "Add Binge-Watcher",
+    emoji: "👩🏽‍💻🛋️",
+    cost: 40,
+    rate: 4,
+    description: "More viewers mean more attention!",
+  },
   {
     name: "Endorse a studio nepo baby?",
     emoji: "👶🏻",
     cost: 100,
     rate: 10,
+    description:
+      "We need ORIGINAL AUTHENTIC content!!! Child of two A-list actors, home-birth on the set of Scarface.. self-made for sure!",
+  },
+  {
+    name: "Promote a pretentious, esoteric director!",
+    emoji: "🎬",
+    cost: 400,
+    rate: 50,
+    description:
+      "If you didn't like it, you just don't get it. It's all about the subtext.",
+  },
+  {
+    name: "Quit your job to become a full-time streamer! $$$",
+    emoji: "🖥️",
+    cost: 1000,
+    rate: 200,
+    description: "Now we can focus on the actually important stuff!",
   },
 ];
+
+function showUpgradeBanner(description: string) {
+  const banner = document.createElement("div");
+  banner.textContent = description;
+  banner.style.position = "fixed";
+  banner.style.top = "0";
+  banner.style.left = "50%";
+  banner.style.transform = "translateX(-50%)";
+  banner.style.background = "#ff7cebff";
+  banner.style.color = "#fff";
+  banner.style.padding = "4px 8px";
+  banner.style.fontSize = "1rem";
+  banner.style.zIndex = "10000";
+  banner.style.borderRadius = "0 0 2px 2px";
+  document.body.appendChild(banner);
+
+  setTimeout(() => {
+    banner.remove();
+  }, 3000); // Hide after 3 seconds
+}
+
+// Call showUpgradeBanner(description) after a new upgrade is purchased.
 
 // Create basic HTML structure
 document.body.innerHTML = `
@@ -72,6 +125,7 @@ availableItems.forEach((item) => {
       counter -= item.cost;
       growthRate += item.rate;
       item.cost *= 1.15; // increase future cost
+      showUpgradeBanner(item.description);
       counterElement.textContent = counter.toFixed(2);
 
       // Update button text to reflect new cost & total rate
