@@ -49,3 +49,34 @@ h1 {
   text-shadow: 0 0 5px #dcbc1e, 0 0 10px #ec2fc3, 0 0 20px #ffe23f;
   animation: flicker 2s infinite alternate;
 }
+
+/* Animated rainbow gradient background */
+body {
+  animation: flicker 0.15s infinite, rainbow-bg 10s linear infinite;
+  background: linear-gradient(
+    270deg,
+    #ff0000,
+    #ff7f00,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #4b0082,
+    #8f00ff
+  );
+  background-size: 1400% 1400%;
+  color: white;
+  font-family: "Optima", monospace;
+}
+
+/* Keyframes for the rainbow background shift */
+@keyframes rainbow-bg {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
