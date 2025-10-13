@@ -10,7 +10,7 @@ let babyCost = 100;
 
 // Create basic HTML structure
 document.body.innerHTML = `
-  <h1>CMPM 121 Project</h1>
+  <h1>The Singularity is Nearer</h1>
   <p>Total Attention Units: <span id="counter">0</span></p>
   <button id="increment"></button>
   <button id="autoclick-btn">Enable Channel Surfer</button>
