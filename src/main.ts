@@ -4,15 +4,25 @@ import "./style.css";
 let counter: number = 0;
 let growthRate: number = 0;
 
+let screenCost = 10;
+let watcherCost = 40;
+let babyCost = 100;
+
 // Create basic HTML structure
 document.body.innerHTML = `
   <h1>CMPM 121 Project</h1>
   <p>Total Attention Units: <span id="counter">0</span></p>
   <button id="increment"></button>
   <button id="autoclick-btn">Enable Channel Surfer</button>
-  <button id="upgrade-btn" disabled>📺 Buy New Screen (Cost: 10 units)</button>
-  <button id="watch-btn" disabled>👩🏽‍💻🛋️ Add Binge-Watcher (Cost: 40 units)</button>
-  <button id="endorse-btn" disabled>👶🏻 Endorse a studio nepo baby? (Cost: 100 units)</button>
+  <button id="upgrade-btn" disabled>📺 Buy New Screen ${
+  screenCost.toFixed(2)
+}</button>
+  <button id="watch-btn" disabled>👩🏽‍💻🛋️ Add Binge-Watcher (Cost: ${
+  watcherCost.toFixed(2)
+} units)</button>
+  <button id="endorse-btn" disabled>👶🏻 Endorse a studio nepo baby? (Cost: ${
+  babyCost.toFixed(2)
+} units)</button>
 `;
 document.createElement("div");
 let tvContainer = document.getElementById("tv-container");
@@ -20,6 +30,15 @@ if (!tvContainer) {
   tvContainer = document.createElement("div");
   tvContainer.id = "tv-container";
   document.body.appendChild(tvContainer);
+}
+
+let babyContainer = document.getElementById("baby-container");
+if (!babyContainer) {
+  babyContainer = document.createElement("div");
+  babyContainer.id = "baby-container";
+  babyContainer.style.display = "block";
+  babyContainer.style.marginTop = "16px"; // Space below TVs
+  document.body.appendChild(babyContainer);
 }
 
 // Add click handler
@@ -70,9 +89,9 @@ function update(time: number) {
   counterElement.textContent = counter.toFixed(2);
 
   // Enable or disable upgrade button dynamically
-  upgradeButton.disabled = counter < 10;
-  watchButton.disabled = counter < 40;
-  endorseButton.disabled = counter < 100;
+  upgradeButton.disabled = counter < screenCost;
+  watchButton.disabled = counter < watcherCost;
+  endorseButton.disabled = counter < babyCost;
 
   requestAnimationFrame(update);
 }
@@ -90,14 +109,16 @@ autoclickButton.addEventListener("click", () => {
 
 // --- Upgrade Purchase ---
 upgradeButton.addEventListener("click", () => {
-  if (counter >= 10) {
-    counter -= 10;
+  if (counter >= screenCost) {
+    counter -= screenCost;
     growthRate += 1; // increases by 1 unit per second
+    screenCost *= 1.15; // Double the cost for the next purchase
     counterElement.textContent = counter.toFixed(2);
 
     // Feedback for upgrade
-    upgradeButton.textContent =
-      `📺 Buy New Screen (Cost: 10) — Rate: ${growthRate}/s`;
+    upgradeButton.textContent = `📺 Buy New Screen (Cost: ${
+      screenCost.toFixed(2)
+    }) — Rate: ${growthRate}/s`;
   }
   const tvEmoji = document.createElement("span");
   tvEmoji.textContent = "📺";
@@ -107,32 +128,36 @@ upgradeButton.addEventListener("click", () => {
 });
 
 watchButton.addEventListener("click", () => {
-  if (counter >= 40) {
-    counter -= 40;
+  if (counter >= watcherCost) {
+    counter -= watcherCost;
     growthRate += 4; // increases by 4 units per second
+    watcherCost *= 1.15; // Double the cost for the next purchase
     counterElement.textContent = counter.toFixed(2);
 
     // Feedback for upgrade
-    watchButton.textContent =
-      `👩🏽‍💻🛋️ Add Binge-Watcher (Cost: 40) — Rate: ${growthRate}/s`;
+    watchButton.textContent = `👩🏽‍💻🛋️ Add Binge-Watcher (Cost: ${
+      watcherCost.toFixed(2)
+    }) — Rate: ${growthRate}/s`;
   }
 });
 
 endorseButton.addEventListener("click", () => {
-  if (counter >= 100) {
-    counter -= 100;
+  if (counter >= babyCost) {
+    counter -= babyCost;
     growthRate += 10; // increases by 10 units per second
+    babyCost *= 1.15; // Double the cost for the next purchase
     counterElement.textContent = counter.toFixed(2);
 
     // Feedback for upgrade
-    endorseButton.textContent =
-      `👶🏻 Endorse a studio nepo baby? (Cost: 100) — Rate: ${growthRate}/s`;
+    endorseButton.textContent = `👶🏻 Endorse a studio nepo baby? (Cost: ${
+      babyCost.toFixed(2)
+    }) — Rate: ${growthRate}/s`;
   }
   const babyEmoji = document.createElement("span");
   babyEmoji.textContent = "👶🏻";
   babyEmoji.style.fontSize = "48px"; // Make it large
   babyEmoji.style.margin = "8px";
-  tvContainer!.appendChild(babyEmoji);
+  babyContainer!.appendChild(babyEmoji);
 });
 
 console.log("cookie");
