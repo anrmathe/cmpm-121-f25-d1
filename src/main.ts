@@ -1,7 +1,7 @@
 import remoteURL from "./remote-control-vector-isolated-icon-remote-control-emoji-illustration-remote-control-vector-icon_603823-875.png";
 import "./style.css";
 
-interface Item {
+interface Upgrade {
   name: string;
   emoji: string;
   cost: number;
@@ -16,7 +16,7 @@ let growthRate: number = 0;
 let autoclickEnabled = false;
 let lastTime = performance.now();
 
-const availableItems: Item[] = [
+const upgrades: Upgrade[] = [
   {
     name: "Buy New Screen",
     emoji: "📺",
@@ -111,46 +111,46 @@ button.addEventListener("click", () => {
   // console.log("I have these thingies:", button, counterElement, counter);
 });
 
-availableItems.forEach((item) => {
+upgrades.forEach((upgrade) => {
   const btn = document.createElement("button");
-  btn.textContent = `${item.emoji} ${item.name} (Cost: ${
-    item.cost.toFixed(
+  btn.textContent = `${upgrade.emoji} ${upgrade.name} (Cost: ${
+    upgrade.cost.toFixed(
       2,
     )
   })`;
   btn.disabled = true;
 
   btn.addEventListener("click", () => {
-    if (counter >= item.cost) {
-      counter -= item.cost;
-      growthRate += item.rate;
-      item.cost *= 1.15; // increase future cost
-      showUpgradeBanner(item.description);
+    if (counter >= upgrade.cost) {
+      counter -= upgrade.cost;
+      growthRate += upgrade.rate;
+      upgrade.cost *= 1.15; // increase future cost
+      showUpgradeBanner(upgrade.description);
       counterElement.textContent = counter.toFixed(2);
 
       // Update button text to reflect new cost & total rate
-      btn.textContent = `${item.emoji} ${item.name} (Cost: ${
-        item.cost.toFixed(
+      btn.textContent = `${upgrade.emoji} ${upgrade.name} (Cost: ${
+        upgrade.cost.toFixed(
           2,
         )
       }) — Rate: ${growthRate}/s`;
 
-      // Visual reward: add emoji for certain items
-      if (!item.container) {
-        item.container = document.createElement("div");
-        item.container.style.marginTop = "8px";
-        itemsContainer.appendChild(item.container);
+      // Visual reward: add emoji for certain upgrades
+      if (!upgrade.container) {
+        upgrade.container = document.createElement("div");
+        upgrade.container.style.marginTop = "8px";
+        itemsContainer.appendChild(upgrade.container);
       }
       const emoji = document.createElement("span");
-      emoji.textContent = item.emoji;
+      emoji.textContent = upgrade.emoji;
       emoji.style.fontSize = "48px";
       emoji.style.margin = "8px";
-      item.container.appendChild(emoji);
+      upgrade.container.appendChild(emoji);
     }
   });
 
   itemsContainer.appendChild(btn);
-  item.element = btn; // store reference
+  upgrade.element = btn; // store reference
 });
 
 function update(time: number) {
@@ -167,10 +167,10 @@ function update(time: number) {
   // Update displayed counter
   counterElement.textContent = counter.toFixed(2);
 
-  // Enable/disable all item buttons dynamically
-  for (const item of availableItems) {
-    if (item.element) {
-      item.element.disabled = counter < item.cost;
+  // Enable/disable all upgrade buttons dynamically
+  for (const upgrade of upgrades) {
+    if (upgrade.element) {
+      upgrade.element.disabled = counter < upgrade.cost;
     }
   }
 
@@ -187,5 +187,3 @@ autoclickButton.addEventListener("click", () => {
     ? "Disable Channel Surfer"
     : "Enable Channel Surfer";
 });
-
-console.log("cookie");
