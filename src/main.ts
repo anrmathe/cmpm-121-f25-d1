@@ -187,5 +187,3 @@ autoclickButton.addEventListener("click", () => {
     ? "Disable Channel Surfer"
     : "Enable Channel Surfer";
 });
-
-console.log("cookie");
