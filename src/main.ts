@@ -11,11 +11,13 @@ interface Upgrade {
   container?: HTMLElement; // optional visual container (like for 📺 or 👶)
 }
 
+// === Game State Variables ===
 let counter: number = 0;
 let growthRate: number = 0;
 let autoclickEnabled = false;
 let lastTime = performance.now();
 
+// === Upgrade Definitions ===
 const upgrades: Upgrade[] = [
   {
     name: "Buy New Screen",
@@ -79,7 +81,7 @@ function showUpgradeBanner(description: string) {
 
 // Call showUpgradeBanner(description) after a new upgrade is purchased.
 
-// Create basic HTML structure
+// === DOM Initialization ===
 document.body.innerHTML = `
   <h1>The Singularity is Nearer</h1>
   <p>Total Attention Units: <span id="counter">0</span></p>
