@@ -136,16 +136,17 @@ const counterElement = document.getElementById("counter")!;
 const itemsContainer = document.getElementById("items-container")!;
 
 button.addEventListener("click", (ev: MouseEvent) => {
-  // Increase counter each time button is clicked
   ++counter;
   counterElement.textContent = counter.toFixed(2);
 
-  // Get click position or fallback to center of button
+  button.classList.add("bounce");
+  setTimeout(() => button.classList.remove("bounce"), 700); // match animation duration
+
   const rect = button.getBoundingClientRect();
   const x = ev.clientX ?? rect.left + rect.width / 2;
   const y = ev.clientY ?? rect.top + rect.height / 2;
 
-  showFloatingText(1, x, y); // <-- shows the +1 floating text
+  showFloatingText(1, x, y);
 });
 
 upgrades.forEach((upgrade) => {
