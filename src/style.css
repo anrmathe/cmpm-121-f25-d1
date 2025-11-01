@@ -80,3 +80,27 @@ body {
     background-position: 0% 50%;
   }
 }
+
+@keyframes float-up {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -80px);
+    opacity: 0;
+  }
+}
+
+.floating-text {
+  position: absolute;
+  transform: translate(-50%, 0);
+  pointer-events: none;
+  user-select: none;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  animation: float-up 1.2s ease-out forwards;
+  z-index: 1000;
+}

@@ -79,6 +79,35 @@ function showUpgradeBanner(description: string) {
   }, 3000); // Hide after 3 seconds
 }
 
+function showFloatingText(amount: number, x: number, y: number) {
+  const el = document.createElement("div");
+  el.textContent = `+${amount.toFixed(0)}`;
+  el.className = "floating-text";
+
+  el.style.position = "absolute";
+  el.style.left = `${x}px`;
+  el.style.top = `${y}px`;
+  el.style.transform = "translate(-50%, 0)";
+  el.style.fontSize = "24px";
+  el.style.fontWeight = "700";
+  el.style.color = "#fff";
+  el.style.textShadow = "0 2px 4px rgba(0,0,0,0.4)";
+  el.style.pointerEvents = "none";
+  el.style.userSelect = "none";
+  el.style.zIndex = "1000";
+  el.style.transition = "transform 1.2s ease-out, opacity 1.2s ease-out";
+  document.body.appendChild(el);
+
+  // Trigger the float up animation
+  requestAnimationFrame(() => {
+    el.style.transform = "translate(-50%, -80px)";
+    el.style.opacity = "0";
+  });
+
+  // Remove the element after animation
+  setTimeout(() => el.remove(), 1200);
+}
+
 // Call showUpgradeBanner(description) after a new upgrade is purchased.
 
 // === DOM Initialization ===
@@ -106,11 +135,17 @@ button.appendChild(img);
 const counterElement = document.getElementById("counter")!;
 const itemsContainer = document.getElementById("items-container")!;
 
-button.addEventListener("click", () => {
-  // Increase counter each time button is clicked.
+button.addEventListener("click", (ev: MouseEvent) => {
+  // Increase counter each time button is clicked
   ++counter;
   counterElement.textContent = counter.toFixed(2);
-  // console.log("I have these thingies:", button, counterElement, counter);
+
+  // Get click position or fallback to center of button
+  const rect = button.getBoundingClientRect();
+  const x = ev.clientX ?? rect.left + rect.width / 2;
+  const y = ev.clientY ?? rect.top + rect.height / 2;
+
+  showFloatingText(1, x, y); // <-- shows the +1 floating text
 });
 
 upgrades.forEach((upgrade) => {
